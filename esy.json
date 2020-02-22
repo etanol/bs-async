@@ -1,0 +1,16 @@
+{
+  "name": "bs-async",
+  "version": "0.1.0",
+  "description": "A syntax extension to deal with JS promises in Bucklescript",
+  "esy": {
+    "build": ["ocamlfind ocamlopt -o #{self.root}/ppx -I +compiler-libs ocamlcommon.cmxa #{self.root}/native/bs_async.ml"]
+  },
+  "dependencies": {
+    "ocaml": "4.06.1",
+    "@opam/ocamlfind": "*"
+  },
+  "devDependencies": {
+    "@opam/ppx_tools": "*"
+  }
+}
+

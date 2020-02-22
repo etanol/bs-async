@@ -1,0 +1,10 @@
+#*#
+*~
+*.cmi
+*.cmo
+*.cmx
+*.o
+.merlin
+_esy
+node_modules
+ppx

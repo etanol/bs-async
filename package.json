@@ -1,0 +1,24 @@
+{
+  "name": "bs-async",
+  "description": "A syntax extension to deal with JS promises in Bucklescript",
+  "version": "0.1.0",
+  "author": "Isaac Jurado",
+  "license": "MIT",
+  "keywords": [
+    "async programming",
+    "bucklescript",
+    "ocaml",
+    "reason"
+  ],
+  "dependencies": {
+    "esy": "*"
+  },
+  "scripts": {
+    "preinstall": "esy build",
+  },
+  "files": [
+    "src/*.ml",
+    "src/*.mli",
+    "ppx"
+  ]
+}
