@@ -1,10 +1,11 @@
 #*#
-*~
 *.cmi
 *.cmo
 *.cmx
 *.o
+*~
 .merlin
 _esy
+lib
 node_modules
 ppx
