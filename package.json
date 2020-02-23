@@ -15,6 +15,7 @@
   },
   "scripts": {
     "preinstall": "esy build",
+    "build": "esy build"
   },
   "files": [
     "src/*.ml",
