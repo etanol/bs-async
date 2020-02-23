@@ -13,8 +13,11 @@
   "dependencies": {
     "esy": "*"
   },
+  "devDependencies": {
+    "bs-platform": ">=7.1.0 <8.0.0"
+  }
   "scripts": {
-    "preinstall": "esy build",
+    "postinstall": "esy build",
     "build": "esy build"
   },
   "files": [
