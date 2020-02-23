@@ -1,0 +1,14 @@
+{
+  "name": "bs-async",
+  "namespace": false,
+  "suffix": ".bs.js",
+  "bsc-flags": ["-bs-super-errors"],
+  "ppx-flags": ["./ppx"],
+  "sources": [
+    "src",
+    {
+      "dir": "tests/bs",
+      "type": "dev"
+    }
+  ]
+}
