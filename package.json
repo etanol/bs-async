@@ -15,7 +15,7 @@
   },
   "devDependencies": {
     "bs-platform": ">=7.1.0 <8.0.0"
-  }
+  },
   "scripts": {
     "postinstall": "esy build",
     "build": "esy build"
