@@ -68,11 +68,18 @@ Result (approximate):
 
 ``` ocaml
 Js.Promise.catch
-  (function pattern1 -> expression1 | pattern2 -> expression2)
+  (function pattern1 -> expression1 | pattern2 -> expression2 | e -> propagate e)
   (Js.Promise.then_
     (fun () -> promise)
     (Js.Promise.resolve ()))
 ```
+
+Again, `%async` would forbid `expression1` and `expression2` from having a
+`Js.Promise.t` type, whereas `%async'` would require it.  Also, in `%async` the
+`propagate e` expression becomes `raise e` while in `%async'`is just
+`Js.Promise.reject e`.  This *catch all* case is automatically appended with a
+warning *silencer* if the existing cases in the code already cover all
+possibilities.
 
 The extra convolution of the generated code attempts to catch any exception
 thrown within the `try` body asynchronously.  If, instead, this PPX generated
@@ -139,7 +146,7 @@ Which translates (approximately) to:
 ``` ocaml
 Js.Promise.then_catch  (* Mapping for two arguments Promise.then() *)
   (function pattern -> expression)
-  (function ex -> handler)
+  (function ex -> handler | e -> propagate e)
   promise
 ```
 
