@@ -82,7 +82,6 @@ let catch_all mode =
          [ (Asttypes.Nolabel,
             Exp.ident @@ (Longident.parse "e" |> Location.mknoloc))
       ])
-    |> warning "-11"
   ]
 
 (*
@@ -157,7 +156,8 @@ let expanded_try mapper mode loc attrs cases expr =
   Exp.apply ~loc ~attrs
     (Exp.ident ~loc (match mode with Functor -> promise_recover | Monad -> promise_catch))
     [ (Asttypes.Nolabel,
-       Exp.function_ @@ mapper.cases mapper cases @ catch_all mode)
+       Exp.function_ @@ mapper.cases mapper cases @ catch_all mode
+       |> warning "-11")
     ; (Asttypes.Nolabel,
        Exp.apply
          (Exp.ident promise_bind)
@@ -222,7 +222,8 @@ let expanded_match mapper mode loc attrs cases expr =
        [ (Asttypes.Nolabel,
           Exp.function_ ~loc (mapper.cases mapper not_exceptions))
        ; (Asttypes.Nolabel,
-          Exp.function_ @@ (List.map unwrap exceptions |> mapper.cases mapper) @ catch_all mode)
+          Exp.function_ @@ (List.map unwrap exceptions |> mapper.cases mapper) @ catch_all mode
+          |> warning "-11")
        ; (Asttypes.Nolabel,
           mapper.expr mapper expr)
        ]
