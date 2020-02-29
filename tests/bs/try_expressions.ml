@@ -8,6 +8,7 @@ let fail_js x =
     Js.Exn.raiseError x |> Js.Promise.resolve
   with
     Js.Exn.Error e -> message e
+   | _ -> ""
 
 let fail_js' x =
   try%async'
@@ -37,4 +38,5 @@ let fail_promise' x =
   try%async'
     Js.Promise.reject x
   with
-    Js.Exn.Error e -> message e |> Js.Promise.resolve
+  | Js.Exn.Error e -> message e |> Js.Promise.resolve
+  | _ -> "Ignored" |> Js.Promise.resolve
