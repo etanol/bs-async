@@ -22,6 +22,7 @@
   },
   "files": [
     "esy.json",
+    "esy.lock",
     "src/*.ml",
     "src/*.mli",
     "ppx"
