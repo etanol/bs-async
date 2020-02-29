@@ -174,6 +174,35 @@ Js.Promise.then_catch  (* Mapping for two arguments Promise.then() *)
 
 [ex]: https://www.cs.cornell.edu/courses/cs3110/2018sp/htmlman/extn.html#sec264
 
+Exception pattern matching
+--------------------------
+
+For `try` and `match` expressions with exception cases, there is some extra glue
+involved.  Because in Javascript plain values can be also thrown, this PPX
+automatically wraps Javascript errors and values into an OCaml/ReasonML
+exception.  It is an attempt at generalizing [what BuckelScript
+recommends][bsex] to deal with exceptions.
+
+Therefore, apart from [the `Js.Exn.Error` constructor][jsex], a new
+`JsPromise.JSValue` constructor is defined to contain a [`Js.Types.tagged_t`
+value][jst].
+
+With this, it's theoretically possible to handle all the cases from a single,
+flat, list of cases:
+
+``` ocaml
+try%async
+  promise
+with
+| Not_found -> 0            (* An OCaml/ReasonML exception *)
+| Js.Exn.Error x -> 1       (* A JS Error instance, "x" has type Js.Exn.t *)
+| JsPromise.JSValue v -> 2  (* A JS value, "v" can be further pattern matched *)
+```
+
+[bsex]: https://bucklescript.github.io/docs/en/exceptions
+[jsex]: https://bucklescript.github.io/bucklescript/api/Js.Exn.html
+[jst]: https://bucklescript.github.io/bucklescript/api/Js.Types.html
+
 In depth discussion
 -------------------
 
