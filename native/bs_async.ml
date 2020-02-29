@@ -67,9 +67,10 @@ let promise_bind_catch = Longident.parse "JsPromise.bind_catch" |> Location.mkno
 let promise_all = Longident.parse "Js.Promise.all" |> Location.mknoloc
 
 (*
- * Create a new "catch all" exception case.  A specific warning silencer is
- * incorporated if the existing cases (where this returned case will be attached
- * to) already handle all possible cases.
+ * Create a new "catch all" exception case.  A specific warning silencer will
+ * need to be incorporated to the expression where this case is appended to.
+ * Otherwise, confusing compiler warnings will start to show up if the cases
+ * existing in the code already handle all possible patterns.
  *
  * Is returned as a single element list to make it easy to concatenate against
  * an existing case list.
