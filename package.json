@@ -11,7 +11,7 @@
     "reason"
   ],
   "dependencies": {
-    "esy": "<=1.0.0"
+    "esy": "*"
   },
   "devDependencies": {
     "bs-platform": ">=7.1.0 <8.0.0"
@@ -21,6 +21,7 @@
     "build": "esy build"
   },
   "files": [
+    "esy.json",
     "src/*.ml",
     "src/*.mli",
     "ppx"
