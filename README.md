@@ -7,6 +7,28 @@ A BuckleScript syntax extension to resemble Javascript `async`/`await`.
 transformations are not stabilized yet.  The package is public in order to
 gather some feedback.
 
+Installation and use
+--------------------
+
+To be able to use this PPX in your BuckleScript project execute the following
+command:
+
+```
+npm install etanol/bs-async
+```
+
+This assumes that `bs-platform` (version 7 or higher) is already installed.
+Then, `bsconfig.json` needs to be modified to include the following:
+
+``` json
+{
+  "ppx-flags": ["bs-async/ppx"],
+  "bs-dependencies": ["bs-async"]
+}
+```
+
+And that should be good to go.
+
 Overview
 --------
 
