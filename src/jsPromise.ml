@@ -5,10 +5,8 @@ external catch' : (Js.Promise.error -> 'a Js.Promise.t [@bs.uncurry]) -> 'a Js.P
 external map_recover' : ('a -> 'b [@bs.uncurry]) -> (Js.Promise.error -> 'b [@bs.uncurry]) -> 'b Js.Promise.t = "then" [@@bs.send.pipe: 'a Js.Promise.t]
 external bind_catch' : ('a -> 'b Js.Promise.t [@bs.uncurry]) -> (Js.Promise.error -> 'b Js.Promise.t [@bs.uncurry]) -> 'b Js.Promise.t = "then" [@@bs.send.pipe: 'a Js.Promise.t]
 
-(* let is_caml_exception = Js.Exn.isCamlExceptionOrOpenVariant
- * let error_exn = Js.Exn.Error *)
-
 exception JSValue of Js.Types.tagged_t
+
 let is_exception : 'a -> bool = [%raw {|
   function (value) {
     return value instanceof Error;
