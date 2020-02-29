@@ -17,7 +17,7 @@
     "bs-platform": ">=7.1.0 <8.0.0"
   },
   "scripts": {
-    "postinstall": "esy build",
+    "postinstall": "esy",
     "build": "esy build"
   },
   "files": [
