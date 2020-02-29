@@ -278,6 +278,6 @@ let async_transform mapper = function
   | other ->
      default_mapper.expr mapper other
 
-(* Perhaps Ast_mapper.run_main makes a different in run time speed? *)
+(* Perhaps Ast_mapper.run_main makes a difference in run time speed? *)
 let () =
   register "async" (fun _ -> { default_mapper with expr = async_transform })
