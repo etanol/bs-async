@@ -21,20 +21,34 @@ let warning arg expr =
   Exp.attr expr (Location.{ txt = "warning" ; loc = none },
                  PStr [Str.eval @@ Exp.constant @@ Const.string arg])
 
-let unit = Location.{ txt = Longident.parse "()" ; loc = none }
-let promise_resolve = Location.{ txt = Longident.parse "Js.Promise.resolve" ; loc = none }
-let promise_map = Location.{ txt = Longident.parse "JsPromise.map" ; loc = none }
-let promise_bind = Location.{ txt = Longident.parse "JsPromise.bind" ; loc = none }
-let promise_recover = Location.{ txt = Longident.parse "JsPromise.recover" ; loc = none }
-let promise_catch = Location.{ txt = Longident.parse "JsPromise.catch" ; loc = none }
-let promise_map_recover = Location.{ txt = Longident.parse "JsPromise.map_recover" ; loc = none }
-let promise_bind_catch = Location.{ txt = Longident.parse "JsPromise.bind_catch" ; loc = none }
-let promise_all = Location.{ txt = Longident.parse "Js.Promise.all" ; loc = none }
+let unit = Longident.parse "()" |> Location.mknoloc
+let raise_ = Longident.parse "raise" |> Location.mknoloc
+let promise_resolve = Longident.parse "Js.Promise.resolve" |> Location.mknoloc
+let promise_reject = Longident.parse "Js.Promise.reject" |> Location.mknoloc
+let promise_map = Longident.parse "JsPromise.map" |> Location.mknoloc
+let promise_bind = Longident.parse "JsPromise.bind" |> Location.mknoloc
+let promise_recover = Longident.parse "JsPromise.recover" |> Location.mknoloc
+let promise_catch = Longident.parse "JsPromise.catch" |> Location.mknoloc
+let promise_map_recover = Longident.parse "JsPromise.map_recover" |> Location.mknoloc
+let promise_bind_catch = Longident.parse "JsPromise.bind_catch" |> Location.mknoloc
+let promise_all = Longident.parse "Js.Promise.all" |> Location.mknoloc
+
+let catch_all mode =
+  [ Exp.case
+      (Pat.var (Location.mknoloc "e"))
+      (Exp.apply
+         (Exp.ident @@ match mode with Functor -> raise_ | Monad -> promise_reject)
+         [ (Asttypes.Nolabel,
+            Exp.ident @@ (Longident.parse "e" |> Location.mknoloc))
+      ])
+    |> warning "-11"
+  ]
 
 let expanded_let_single mapper mode loc attrs { pvb_pat ; pvb_expr ; pvb_attributes ; pvb_loc } expr =
   Exp.apply ~loc ~attrs
     (Exp.ident (match mode with Functor -> promise_map | Monad -> promise_bind))
-    [ (Asttypes.Nolabel, Exp.fun_ Asttypes.Nolabel None (mapper.pat mapper pvb_pat) (mapper.expr mapper expr))
+    [ (Asttypes.Nolabel, Exp.fun_ ~loc:pvb_loc Asttypes.Nolabel None
+                           (mapper.pat mapper pvb_pat) (mapper.expr mapper expr))
     ; (Asttypes.Nolabel, mapper.expr mapper pvb_expr)
     ]
 
@@ -56,12 +70,15 @@ let expanded_let_multi mapper mode loc attrs bindings expr =
 let expanded_try mapper mode loc attrs cases expr =
   Exp.apply ~loc ~attrs
     (Exp.ident ~loc (match mode with Functor -> promise_recover | Monad -> promise_catch))
-    [ (Asttypes.Nolabel, Exp.function_ (mapper.cases mapper cases))
+    [ (Asttypes.Nolabel,
+       Exp.function_ @@ mapper.cases mapper cases @ catch_all mode)
     ; (Asttypes.Nolabel,
        Exp.apply
          (Exp.ident promise_bind)
-         [ (Asttypes.Nolabel, Exp.fun_ Asttypes.Nolabel None (Pat.construct unit None) (mapper.expr mapper expr))
-         ; (Asttypes.Nolabel, Exp.apply (Exp.ident promise_resolve) [(Asttypes.Nolabel, Exp.construct unit None)])
+         [ (Asttypes.Nolabel,
+            Exp.fun_ Asttypes.Nolabel None (Pat.construct unit None) (mapper.expr mapper expr))
+         ; (Asttypes.Nolabel,
+            Exp.apply (Exp.ident promise_resolve) [(Asttypes.Nolabel, Exp.construct unit None)])
       ])
     ]
 
@@ -80,16 +97,21 @@ let expanded_match mapper mode loc attrs cases expr =
   | [] -> (* No exception cases, then expand to the simple version *)
      Exp.apply ~loc ~attrs
        (Exp.ident (match mode with Functor -> promise_map | Monad -> promise_bind))
-       [ (Asttypes.Nolabel, Exp.function_ (mapper.cases mapper cases))
-       ; (Asttypes.Nolabel, mapper.expr mapper expr)
+       [ (Asttypes.Nolabel,
+          Exp.function_ ~loc (mapper.cases mapper cases))
+       ; (Asttypes.Nolabel,
+          mapper.expr mapper expr)
        ]
   | exceptions ->
      let not_exceptions = List.filter (fun x -> not @@ is_exception x) cases in
      Exp.apply ~loc ~attrs
        (Exp.ident (match mode with Functor -> promise_map_recover | Monad -> promise_bind_catch))
-       [ (Asttypes.Nolabel, Exp.function_ (mapper.cases mapper not_exceptions))
-       ; (Asttypes.Nolabel, Exp.function_ (List.map unwrap exceptions |> mapper.cases mapper))
-       ; (Asttypes.Nolabel, mapper.expr mapper expr)
+       [ (Asttypes.Nolabel,
+          Exp.function_ ~loc (mapper.cases mapper not_exceptions))
+       ; (Asttypes.Nolabel,
+          Exp.function_ @@ (List.map unwrap exceptions |> mapper.cases mapper) @ catch_all mode)
+       ; (Asttypes.Nolabel,
+          mapper.expr mapper expr)
        ]
 
 let expanded_expression mapper mode { pexp_desc ; pexp_loc ; pexp_attributes } =
