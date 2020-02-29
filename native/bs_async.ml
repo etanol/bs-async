@@ -59,11 +59,11 @@ let raise_ = Longident.parse "raise" |> Location.mknoloc
 let promise_resolve = Longident.parse "Js.Promise.resolve" |> Location.mknoloc
 let promise_reject = Longident.parse "Js.Promise.reject" |> Location.mknoloc
 let promise_map = Longident.parse "JsPromise.map" |> Location.mknoloc
-let promise_bind = Longident.parse "JsPromise.bind" |> Location.mknoloc
+let promise_bind = Longident.parse "Js.Promise.then_" |> Location.mknoloc
 let promise_recover = Longident.parse "JsPromise.recover" |> Location.mknoloc
 let promise_catch = Longident.parse "JsPromise.catch" |> Location.mknoloc
 let promise_map_recover = Longident.parse "JsPromise.map_recover" |> Location.mknoloc
-let promise_bind_catch = Longident.parse "JsPromise.bind_catch" |> Location.mknoloc
+let promise_bind_catch = Longident.parse "JsPromise.then_catch" |> Location.mknoloc
 let promise_all = Longident.parse "Js.Promise.all" |> Location.mknoloc
 
 (*
