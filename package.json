@@ -18,13 +18,8 @@
   },
   "scripts": {
     "postinstall": "esy",
-    "build": "esy build"
-  },
-  "files": [
-    "esy.json",
-    "esy.lock",
-    "src/*.ml",
-    "src/*.mli",
-    "ppx"
-  ]
+    "build": "esy build",
+    "dumpast": "esy ocamlfind ppx_tools/dumpast",
+    "rewriter": "esy ocamlfind ppx_tools/rewriter ./ppx"
+  }
 }
