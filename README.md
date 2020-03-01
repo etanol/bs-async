@@ -3,9 +3,15 @@ bs-async
 
 A BuckleScript syntax extension to resemble Javascript `async`/`await`.
 
-**IMPORTANT:** This is an experimental package.  The semantics of code
-transformations are not stabilized yet.  The package is public in order to
-gather some feedback.
+This is another reincarnation of [bs-let][let], this time tailored only for
+Javascript promises.  Contrary to [bs-let][let] (and similar initiatives), this
+is **not** a generic *monadic* syntax transformation.
+
+Given that the merge of facebook/reason#2487 marks a temporary forking point
+between the OCaml and ReasonML syntax equivalence, this PPX becomes more useful
+to the OCaml syntax of BuckleScript.
+
+[let]: /reasonml-labs/bs-let
 
 Installation and use
 --------------------
@@ -57,6 +63,13 @@ Js.Promise.then_ (fun name -> expression) promise
 Using `%async` **forbids** `expression` from being of `Js.Promise.t` type,
 whereas `%async'` **requires** it.
 
+What's being simulated in Javascript:
+
+``` javscript
+let name = await promise;
+expression
+```
+
 It also works with multiple bindings.  Original:
 
 ``` ocaml
@@ -72,6 +85,13 @@ Result (approximate):
 Js.Promise.then_
   (fun [| first ; second |] -> expression)
   (Js.Promise.all [| promise1 ; promise2 |])
+```
+
+What's almost being simulated in Javascript:
+
+``` javscript
+let [first, second] = await Promise.all(promise1, promise2);
+expression
 ```
 
 ### `try` expressions ###
@@ -129,6 +149,16 @@ let fail x : string -> string=
 
 The `fail` function should return a rejected promise.  However, depending on how
 it's used, it could raise an OCaml exception immediately.
+
+In Javascript, it would look approximately like this:
+
+``` javscript
+try {
+    await promise;
+} catch (e) {
+    handle_exception;
+}
+```
 
 ### `match` expressions ###
 
@@ -202,10 +232,3 @@ with
 [bsex]: https://bucklescript.github.io/docs/en/exceptions
 [jsex]: https://bucklescript.github.io/bucklescript/api/Js.Exn.html
 [jst]: https://bucklescript.github.io/bucklescript/api/Js.Types.html
-
-In depth discussion
--------------------
-
-For now, see the [design notes][d] separately available.
-
-[d]: DESIGN.md
