@@ -65,7 +65,7 @@ whereas `%async'` **requires** it.
 
 What's being simulated in Javascript:
 
-``` javscript
+``` javascript
 let name = await promise;
 expression
 ```
@@ -89,7 +89,7 @@ Js.Promise.then_
 
 What's almost being simulated in Javascript:
 
-``` javscript
+``` javascript
 let [first, second] = await Promise.all(promise1, promise2);
 expression
 ```
@@ -152,7 +152,7 @@ it's used, it could raise an OCaml exception immediately.
 
 In Javascript, it would look approximately like this:
 
-``` javscript
+``` javascript
 try {
     await promise;
 } catch (e) {
