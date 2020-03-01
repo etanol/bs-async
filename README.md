@@ -210,7 +210,7 @@ Exception pattern matching
 For `try` and `match` expressions with exception cases, there is some extra glue
 involved.  Because in Javascript plain values can be also thrown, this PPX
 automatically wraps Javascript errors and values into an OCaml/ReasonML
-exception.  It is an attempt at generalizing [what BuckelScript
+exception.  It is an attempt at generalizing [what BuckleScript
 recommends][bsex] to deal with exceptions.
 
 Therefore, apart from [the `Js.Exn.Error` constructor][jsex], a new
